@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:todoey_flutter/models/task.dart';
 import 'package:todoey_flutter/screens/add_task_screen.dart';
 import 'package:todoey_flutter/widgets/tasks_list.dart';
 
-class TasksScreen extends StatelessWidget {
+class TasksScreen extends StatefulWidget {
   const TasksScreen({super.key});
+
+  @override
+  State<TasksScreen> createState() => _TasksScreenState();
+}
+
+class _TasksScreenState extends State<TasksScreen> {
+  List<Task> tasks = [
+    Task(name: 'Buy milk'),
+    Task(name: 'Buy eggs'),
+    Task(name: 'Buy bread')
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +26,15 @@ class TasksScreen extends StatelessWidget {
         shape: CircleBorder(),
         onPressed: () {
           showModalBottomSheet(
-              context: context, builder: (context) => AddTaskScreen());
+            context: context,
+            builder: (context) =>
+                AddTaskScreen(addTaskCallback: (newTaskTitle) {
+              setState(() {
+                tasks.add(Task(name: newTaskTitle));
+              });
+              Navigator.pop(context);
+            }),
+          );
         },
         child: const Icon(
           Icons.add,
@@ -31,10 +51,10 @@ class TasksScreen extends StatelessWidget {
               bottom: 30.0,
               right: 30.0,
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 30.0,
                   backgroundColor: Colors.white,
                   child: Icon(
@@ -43,10 +63,10 @@ class TasksScreen extends StatelessWidget {
                     size: 30.0,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10.0,
                 ),
-                Text(
+                const Text(
                   'Todoey',
                   style: TextStyle(
                     color: Colors.white,
@@ -55,8 +75,8 @@ class TasksScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '12 Tasks',
-                  style: TextStyle(
+                  '${tasks.length} Tasks',
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18.0,
                   ),
@@ -74,7 +94,7 @@ class TasksScreen extends StatelessWidget {
                   topRight: Radius.circular(20.0),
                 ),
               ),
-              child: TasksList(),
+              child: TasksList(tasks: tasks),
             ),
           )
         ],
