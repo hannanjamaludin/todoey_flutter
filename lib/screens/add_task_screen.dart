@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todoey_flutter/models/task_data.dart';
 
 class AddTaskScreen extends StatelessWidget {
-  const AddTaskScreen({super.key, this.addTaskCallback});
-
-  final Function? addTaskCallback;
+  const AddTaskScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +32,22 @@ class AddTaskScreen extends StatelessWidget {
             ),
             TextButton(
               style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Colors.lightBlueAccent),
-                foregroundColor: WidgetStatePropertyAll(Colors.white),
+                backgroundColor:
+                    const WidgetStatePropertyAll(Colors.lightBlueAccent),
+                foregroundColor: const WidgetStatePropertyAll(Colors.white),
                 shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                  const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                 ),
               ),
               onPressed: () {
-                addTaskCallback!(newTaskTitle);
+                if (newTaskTitle.isNotEmpty) {
+                  // addTaskCallback!(newTaskTitle);
+
+                  // add the task using Provider, listen = false to avoid widget being rebuilt
+                  Provider.of<TaskData>(context, listen: false)
+                      .addTask(newTaskTitle);
+                  Navigator.pop(context);
+                }
               },
               child: const Text('Add'),
             ),
